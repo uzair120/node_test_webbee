@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { MenuItem } from './entities/menu-item.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 
 @Injectable()
 export class MenuItemsService {
@@ -86,6 +86,9 @@ export class MenuItemsService {
     ]
   */
   async getMenuItems() {
-    throw new Error('TODO in task 3');
+    const data = await this.menuItemRepository.find({
+      where: { parent: IsNull() },
+    });
+    return data;
   }
 }

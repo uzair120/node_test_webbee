@@ -2,6 +2,7 @@ import { Repository } from 'typeorm';
 import { Get, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Event } from './entities/event.entity';
+import { Workshop } from './entities/workshop.entity';
 
 @Injectable()
 export class EventsService {
@@ -93,7 +94,28 @@ export class EventsService {
 
   @Get('events')
   async getEventsWithWorkshops() {
-    throw new Error('TODO task 1');
+    // const data = await this.eventRepository
+    //   .createQueryBuilder('event')
+    //   .leftJoinAndSelect(
+    //     'event.workshops',
+    //     'workshop',
+    //     'workshop.eventId = event.id',
+    //   )
+    //   .select(['event.name', 'event.id'])
+    //   .addSelect(['workshop.start'])
+    //   .execute();
+    const data = await this.eventRepository
+      .createQueryBuilder('event')
+      .select(
+        'event.id as evid',
+        '(SELECT wrk.start FROM workshop wrk WHERE wrk.eventId = event.id) as addresstypeName',
+      )
+
+      .getMany();
+
+    console.log('DATA=> ', data);
+    return data;
+    // throw new Error('TODO task 1');
   }
 
   /* TODO: complete getFutureEventWithWorkshops so that it returns events with workshops, that have not yet started
